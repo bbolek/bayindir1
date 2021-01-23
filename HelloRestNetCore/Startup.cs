@@ -1,11 +1,10 @@
+using AutoMapper;
+using HelloRestNetCore.Data;
 using HelloRestNetCore.Models;
 using HelloRestNetCore.Services;
 using HelloRestNetCore.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,6 +23,16 @@ namespace HelloRestNetCore
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(a =>
+            {
+                a.AddDefaultPolicy(b =>
+                {
+                    b.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                        .WithOrigins("http://localhost:3000");
+                });
+            });
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
@@ -36,11 +45,13 @@ namespace HelloRestNetCore
             services.AddScoped<IDatabaseService, DatabaseService>();
             services.AddScoped<RequestDetails>();
             services.AddScoped<EverytimeNew>();
+            services.AddAutoMapper(typeof(MappingProfile));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseCors();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -54,7 +65,7 @@ namespace HelloRestNetCore
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseSpaStaticFiles();
+         /*   app.UseSpaStaticFiles();*/
 
             app.UseRouting();
 
@@ -64,7 +75,7 @@ namespace HelloRestNetCore
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
-
+            /*
             app.UseSpa(spa =>
             {
                 spa.Options.SourcePath = "ClientApp";
@@ -73,7 +84,7 @@ namespace HelloRestNetCore
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
-            });
+            });*/
         }
     }
 }
