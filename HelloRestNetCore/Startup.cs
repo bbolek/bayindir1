@@ -1,5 +1,6 @@
 using AutoMapper;
 using HelloRestNetCore.Data;
+using HelloRestNetCore.Infrastructure;
 using HelloRestNetCore.Models;
 using HelloRestNetCore.Services;
 using HelloRestNetCore.Services.Interfaces;
@@ -52,20 +53,12 @@ namespace HelloRestNetCore
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors();
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
+            
+            app.UseMiddleware<ExceptionHandler>();
+            app.UseMiddleware<RequestLoggingMiddleware>();
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-         /*   app.UseSpaStaticFiles();*/
 
             app.UseRouting();
 
@@ -75,16 +68,6 @@ namespace HelloRestNetCore
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
             });
-            /*
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                }
-            });*/
         }
     }
 }

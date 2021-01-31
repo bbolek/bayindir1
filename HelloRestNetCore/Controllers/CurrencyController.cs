@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using HelloRestNetCore.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,7 @@ namespace HelloRestNetCore.Controllers
                     Value = 1m
                 }
             };
+            throw new ValidationException("Not valid");
 
             return currencies;
         }
